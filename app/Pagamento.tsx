@@ -56,9 +56,9 @@ export default function Pagamento() {
             <Text variant="titleMedium">Total: R$ {total.toFixed(2)}</Text>
         </View>
         <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={() => router.push("/Assinatura")}>
-                Confirmar Pagamento
-            </Button>
+          <Button mode="contained" onPress={() => router.push({ pathname: "/Assinatura", params: { valor: total } })}>
+            Confirmar Pagamento
+          </Button>
         </View>
         </ScrollView>
     );
