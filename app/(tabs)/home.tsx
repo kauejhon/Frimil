@@ -1,8 +1,16 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
-import { Modal, Platform, Pressable, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, FlatList } from "react-native";
 import { Button, Text } from "react-native-paper";
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import { useNavigation } from "@react-navigation/native";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Home: undefined;
+  Cliente: { clienteId: string; clienteNome: string };
+};
+
 
 
 const INITIAL_REGION = {
@@ -13,7 +21,23 @@ const INITIAL_REGION = {
 }
 
 export default function HomeScreen() {
-    const [ visible, setVisible ] = useState<boolean>(false)
+    const [visible, setVisible] = useState<boolean>(false);
+    const [cliente, setClientes] = useState([
+        { id: "1", nome: "Casa do Beef" },
+        { id: "2", nome: "Real Beef" },
+        { id: "3", nome: "Merc. Bragança Filho" },
+        { id: "4", nome: "Portas Abertas" },
+        { id: "5", nome: "Nosso Frango" },
+        { id: "6", nome: "Zé Maria" },
+        { id: "7", nome: "Mercantil Sodré" },
+        { id: "8", nome: "Aç. Alvorada" },
+        { id: "9", nome: "Tarcísio" },
+        { id: "10", nome: "Regina" }
+    ]);
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const handleClientePress = (cliente: { id: string, nome: string }) => {
+        navigation.navigate('Cliente', { clienteId: cliente.id, clienteNome: cliente.nome });
+    };
 
 
   return (
@@ -26,6 +50,19 @@ export default function HomeScreen() {
                 </TouchableOpacity>
             </View>
 
+            <FlatList
+                data={cliente}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => handleClientePress(item)}>
+                        <View style={styles.clienteItem}>
+                            <Text>{item.nome}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+                style={{ marginTop: 20 }}
+            />
+              
             <Modal
               visible={visible}
               animationType="fade"
@@ -88,5 +125,10 @@ const styles = StyleSheet.create({
     map: {
         width: "100%",
         height: "50%",
+    },
+    clienteItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee"
     }
 })
