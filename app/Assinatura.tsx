@@ -9,8 +9,6 @@ export default function Assinatura() {
   const router = useRouter();
 
   const handleOK = (signature: string) => {
-    // Aqui você pode salvar a assinatura (base64)
-    // e redirecionar ou mostrar uma mensagem de sucesso
     router.back(); // Volta para a tela anterior
   };
 
@@ -44,19 +42,19 @@ export default function Assinatura() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-  },
-  title: {
-    marginBottom: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  button: {
-    marginTop: 16,
-    alignSelf: "center",
-  },
+    container: {
+        flex: 1,
+        padding: 24,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+    },
+    title: {
+        marginBottom: 16,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+        button: {
+        marginTop: 16,
+        alignSelf: "center",
+    },
 });
