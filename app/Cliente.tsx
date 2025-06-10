@@ -5,7 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Cliente() {
   const router = useRouter();
-  const { clienteId, clienteNome } = useLocalSearchParams();
+  const { clienteId, clienteNome, clienteSaldo } = useLocalSearchParams();
 
   return (
     <View style={styles.container}>
@@ -14,7 +14,7 @@ export default function Cliente() {
       </Text>
       <Text>Código: {clienteId}</Text>
       <Text>Nome: {clienteNome}</Text>
-      <Text>Saldo atual: R$ 12.535,00</Text>
+      <Text>Saldo atual: R$ {clienteSaldo}</Text>
 
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => router.push("/Pagamento")}>

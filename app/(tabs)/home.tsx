@@ -8,7 +8,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
   Home: undefined;
-  Cliente: { clienteId: string; clienteNome: string };
+  Cliente: { clienteId: string; clienteNome: string; clienteSaldo: number };
 };
 
 
@@ -23,20 +23,20 @@ const INITIAL_REGION = {
 export default function HomeScreen() {
     const [visible, setVisible] = useState<boolean>(false);
     const [cliente, setClientes] = useState([
-        { id: "1", nome: "Casa do Beef" },
-        { id: "2", nome: "Real Beef" },
-        { id: "3", nome: "Merc. Bragança Filho" },
-        { id: "4", nome: "Portas Abertas" },
-        { id: "5", nome: "Nosso Frango" },
-        { id: "6", nome: "Zé Maria" },
-        { id: "7", nome: "Mercantil Sodré" },
-        { id: "8", nome: "Aç. Alvorada" },
-        { id: "9", nome: "Tarcísio" },
-        { id: "10", nome: "Regina" }
+        { id: "1", nome: "Casa do Beef", saldo: 12535.00, endereco: "Av. Brasil, 123" },
+        { id: "2", nome: "Real Beef", saldo: 5342.00, endereco: "Av. São Paulo, 456" },
+        { id: "3", nome: "Merc. Bragança Filho", saldo: 2345.00, endereco: "Rua das Flores, 789" },
+        { id: "4", nome: "Portas Abertas", saldo: 1200.00, endereco: "Rua das Palmeiras, 101" },
+        { id: "5", nome: "Nosso Frango", saldo: 6789.00, endereco: "Av. das Nações, 202" },
+        { id: "6", nome: "Zé Maria", saldo: 8900.00, endereco: "Rua do Comércio, 303" },
+        { id: "7", nome: "Mercantil Sodré", saldo: 4500.00, endereco: "Av. Central, 404" },
+        { id: "8", nome: "Aç. Alvorada", saldo: 3200.00, endereco: "Rua da Liberdade, 505" },
+        { id: "9", nome: "Tarcísio", saldo: 1500.00, endereco: "Av. das Américas, 606" },
+        { id: "10", nome: "Regina", saldo: 7800.00, endereco: "Rua do Sol, 707" }
     ]);
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const handleClientePress = (cliente: { id: string, nome: string }) => {
-        navigation.navigate('Cliente', { clienteId: cliente.id, clienteNome: cliente.nome });
+    const handleClientePress = (cliente: { id: string, nome: string, saldo: number }) => {
+        navigation.navigate('Cliente', { clienteId: cliente.id, clienteNome: cliente.nome, clienteSaldo: cliente.saldo });
     };
 
 
