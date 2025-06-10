@@ -43,49 +43,55 @@ export default function HomeScreen() {
   return (
     <ScrollView>
         <View style={styles.container}>
-            <View style={styles.containerChild}>
-                <Text style={styles.title} variant="titleLarge">Cliente</Text>
-                <TouchableOpacity onPress={() => setVisible(true)}>
-                    <AntDesign name="pluscircle" size={24}/>
+            <Text style={styles.title} variant="titleLarge">
+                Clientes
+            </Text>
+        <View style={styles.containerChild}>
+          <FlatList         
+            data={cliente}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.clientList}>
+                <TouchableOpacity onPress={() => handleClientePress(item)}>
+                  <View style={styles.clienteItem}>
+                    <Text>
+                      {item.nome}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => setVisible(true)}>
+                  <AntDesign name="pluscircle" size={24} />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+
+        <Modal
+          visible={visible}
+          animationType="fade"
+          onRequestClose={() => setVisible(false)}
+        >
+          <View style={styles.containerModal}>
+            <View style={styles.childViewModal}>
+              <Text style={styles.titleModal} variant="titleLarge">
+                Cliente
+              </Text>
+              <Pressable onPress={() => setVisible(false)}>
+                <AntDesign name="closecircle" size={24} />
+              </Pressable>
             </View>
 
-            <FlatList
-                data={cliente}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleClientePress(item)}>
-                        <View style={styles.clienteItem}>
-                            <Text>{item.nome}</Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-                style={{ marginTop: 20 }}
+            <MapView
+              style={styles.map}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={INITIAL_REGION}
+              showsUserLocation
+              showsMyLocationButton={true}
             />
-              
-            <Modal
-              visible={visible}
-              animationType="fade"
-              onRequestClose={() => setVisible(false)}
-            
-            >
-                <View style={styles.containerModal}>
-                    <View style={styles.childViewModal}>
-                        <Text style={styles.titleModal} variant="titleLarge">Cliente</Text>
-                        <Pressable onPress={() => setVisible(false)}>
-                            <AntDesign name="closecircle" size={24}/>
-                        </Pressable>
-                    </View>
-
-                    <MapView style={styles.map} provider={PROVIDER_GOOGLE} initialRegion={INITIAL_REGION} showsUserLocation showsMyLocationButton={true}/>
-
-                </View>
-                
-
-            </Modal>
-            
-
-        </View>
+          </View>
+        </Modal>
+      </View>
     </ScrollView>
   );
 }
@@ -99,14 +105,30 @@ const styles = StyleSheet.create({
     },
     containerChild: {
         flex: 1,
-        marginTop: Platform.OS === "android" ? StatusBar.currentHeight! + 20 : 20,
+        // marginTop: Platform.OS === "android" ? StatusBar.currentHeight! + 20 : 20,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-    }, 
+    },
+    clientList: {
+        flex: 1,
+        marginTop: 20,
+        padding: 10,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+    },
     title: {
         color: "#000",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        marginTop: 20,
     },
     containerModal: {
         flex: 1,
@@ -128,7 +150,5 @@ const styles = StyleSheet.create({
     },
     clienteItem: {
         padding: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee"
     }
 })

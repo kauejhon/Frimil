@@ -15,7 +15,6 @@ export default function Cliente() {
       <Text>Código: {clienteId}</Text>
       <Text>Nome: {clienteNome}</Text>
       <Text>Saldo atual: R$ {clienteSaldo}</Text>
-
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => router.push("/Pagamento")}>
           Ir para Pagamento
