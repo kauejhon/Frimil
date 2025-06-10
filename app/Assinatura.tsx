@@ -28,36 +28,29 @@ export default function Assinatura() {
             ref={signatureRef}
             onOK={handleOK}
             descriptionText="Assine abaixo"
-            clearText="Limpar"
-            confirmText="Salvar"
+            // clearText="Limpar"
+            // confirmText="Salvar"
             webStyle={`
-              .m-signature-pad--footer { 
-                display: flex; 
-                justify-content: space-between; 
-                margin: 0px; 
-              }
-              .m-signature-pad--footer .button {
-                background: #b7950b;
-                color: #fff;
-                border-radius: 4px;
-                border: none;
-                padding: 8px 16px;
-                margin: 0 8px;
-                font-size: 16px;
-              }
               body,html {width: 100vw; height: 100vh;}
             `}
             autoClear={false}
             backgroundColor="#fff"
           />
         </View>
-        {/* <Button
+        <Button
           style={styles.button}
           mode="outlined"
           onPress={() => signatureRef.current?.clearSignature()}
         >
           Limpar Assinatura
-        </Button> */}
+        </Button>
+        <Button
+          style={styles.button}
+          mode="contained"
+          onPress={() => signatureRef.current?.readSignature()}
+        >
+          Salvar Assinatura
+        </Button>
       </View>
     );
 }
@@ -76,13 +69,11 @@ export default function Assinatura() {
       fontWeight: "bold",
       textAlign: "center",
       fontSize: 22,
-      color: "#b7950b",
     },
     signatureBox: {
       width: Dimensions.get("window").width - 48,
-      height: 260,
+      height: 600,
       borderWidth: 2,
-      borderColor: "#f7d358",
       borderRadius: 8,
       backgroundColor: "#fffde7",
       marginBottom: 24,
@@ -92,6 +83,5 @@ export default function Assinatura() {
       marginTop: 8,
       alignSelf: "center",
       width: 200,
-      borderColor: "#b7950b",
     },
   });

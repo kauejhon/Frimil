@@ -57,7 +57,6 @@ export default function Comprovante() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fffbe6",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
