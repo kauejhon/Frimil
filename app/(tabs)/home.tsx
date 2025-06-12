@@ -1,8 +1,16 @@
 import { AntDesign } from "@expo/vector-icons";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Modal, Platform, Pressable, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Button } from "react-native";
+import { Alert, Modal, Platform, Pressable, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, FlatList, Button } from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import { useNavigation } from "@react-navigation/native";
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Home: undefined;
+  Cliente: { clienteId: string; clienteNome: string; clienteSaldo: number };
+};
+
 import * as Location from 'expo-location';
 
 interface StatusLocation {
@@ -15,7 +23,23 @@ interface StatusLocation {
 }
 
 export default function HomeScreen() {
-    const [ visible, setVisible ] = useState<boolean>(false)
+    const [visible, setVisible] = useState<boolean>(false);
+    const [cliente, setClientes] = useState([
+        { id: "1", nome: "Casa do Beef", saldo: 12535.00, endereco: "Av. Brasil, 123" },
+        { id: "2", nome: "Real Beef", saldo: 5342.00, endereco: "Av. São Paulo, 456" },
+        { id: "3", nome: "Merc. Bragança Filho", saldo: 2345.00, endereco: "Rua das Flores, 789" },
+        { id: "4", nome: "Portas Abertas", saldo: 1200.00, endereco: "Rua das Palmeiras, 101" },
+        { id: "5", nome: "Nosso Frango", saldo: 6789.00, endereco: "Av. das Nações, 202" },
+        { id: "6", nome: "Zé Maria", saldo: 8900.00, endereco: "Rua do Comércio, 303" },
+        { id: "7", nome: "Mercantil Sodré", saldo: 4500.00, endereco: "Av. Central, 404" },
+        { id: "8", nome: "Aç. Alvorada", saldo: 3200.00, endereco: "Rua da Liberdade, 505" },
+        { id: "9", nome: "Tarcísio", saldo: 1500.00, endereco: "Av. das Américas, 606" },
+        { id: "10", nome: "Regina", saldo: 7800.00, endereco: "Rua do Sol, 707" }
+    ]);
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const handleClientePress = (cliente: { id: string, nome: string, saldo: number }) => {
+        navigation.navigate('Cliente', { clienteId: cliente.id, clienteNome: cliente.nome, clienteSaldo: cliente.saldo });
+    };
     const [ currentLocation, setCurrentLocation ] = useState<Region | null>(null);
     // const [ hasLocationPermission, setHasLocationPermission ] = useState<boolean>(false)
     const [ error, setError ] = useState<string | null>("")
@@ -52,12 +76,29 @@ export default function HomeScreen() {
   return (
     <ScrollView>
         <View style={styles.container}>
-            <View style={styles.containerChild}>
-                <Text style={styles.title} variant="titleLarge">Cliente</Text>
-                <TouchableOpacity onPress={() => setVisible(true)}>
-                    <AntDesign name="pluscircle" size={24}/>
+            <Text style={styles.title} variant="titleLarge">
+                Clientes
+            </Text>
+        <View style={styles.containerChild}>
+          <FlatList         
+            data={cliente}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.clientList}>
+                <TouchableOpacity onPress={() => handleClientePress(item)}>
+                  <View style={styles.clienteItem}>
+                    <Text>
+                      {item.nome}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
-            </View>
+                <TouchableOpacity onPress={() => setVisible(true)}>
+                  <AntDesign name="pluscircle" size={24} />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
 
             <Modal
               visible={visible}
@@ -120,14 +161,30 @@ const styles = StyleSheet.create({
     },
     containerChild: {
         flex: 1,
-        marginTop: Platform.OS === "android" ? StatusBar.currentHeight! + 20 : 20,
+        // marginTop: Platform.OS === "android" ? StatusBar.currentHeight! + 20 : 20,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-    }, 
+    },
+    clientList: {
+        flex: 1,
+        marginTop: 20,
+        padding: 10,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+    },
     title: {
         color: "#000",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        marginTop: 20,
     },
     containerModal: {
         flex: 1,
@@ -146,6 +203,9 @@ const styles = StyleSheet.create({
     map: {
         width: "100%",
         height: "50%",
+    },
+    clienteItem: {
+        padding: 12,
     }
 })
 
