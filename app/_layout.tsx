@@ -1,24 +1,17 @@
-import { router, Stack } from "expo-router";
-import { useEffect } from "react";
+import { router, Slot, Stack } from "expo-router";
+import { ClerkProvider } from '@clerk/clerk-expo'
+import { tokenCache } from '@clerk/clerk-expo/token-cache'
 
-// function RouteGuard({ children }: { children: React.ReactNode }) {
-//     const isAuth = false;
 
-//     useEffect(() => {
-//         if(!isAuth) {
-//             router.replace("/auth")
-//         }
-//     }, [])
-
-//     return <>{ children }</>
-
-// }
  
 export default function RootLayout() {
+    
   return(
-        <Stack>
-            <Stack.Screen name="(tabs)" options={{headerShown: false}} />
-        </Stack>
+    <ClerkProvider tokenCache={tokenCache}>
+        <Slot />
+
+    </ClerkProvider>
+    
   );
 }
 

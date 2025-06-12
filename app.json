@@ -9,6 +9,9 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+        "infoPlist": {
+            "NSLocationWhenInUseUsageDescription": "Seu aplicativo precisa acessar sua localização para mostrá-la no mapa."
+        },
       "supportsTablet": true
     },
     "android": {
