@@ -36,6 +36,7 @@ export default function HomeScreen() {
         { id: "9", nome: "Tarcísio", saldo: 1500.00, endereco: "Av. das Américas, 606" },
         { id: "10", nome: "Regina", saldo: 7800.00, endereco: "Rua do Sol, 707" }
     ]);
+    const [clienteSelecionado, setClienteSelecionado] = useState<typeof cliente[0] | null>(null);
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const handleClientePress = (cliente: { id: string, nome: string, saldo: number }) => {
         navigation.navigate('Cliente', { clienteId: cliente.id, clienteNome: cliente.nome, clienteSaldo: cliente.saldo });
@@ -74,79 +75,100 @@ export default function HomeScreen() {
 
 
   return (
-        <View style={styles.container}>
-            <Text style={styles.title} variant="titleLarge">
-                Clientes
-            </Text>
-        <View style={styles.containerChild}>
-          <FlatList         
-            data={cliente}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.clientList}>
-                <TouchableOpacity onPress={() => handleClientePress(item)}>
-                  <View style={styles.clienteItem}>
-                    <Text>
-                      {item.nome}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setVisible(true)}>
-                  <AntDesign name="pluscircle" size={24} />
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        </View>
-
-            <Modal
-              visible={visible}
-              animationType="fade"
-              onRequestClose={() => setVisible(false)}
-            
-            >
-                <View style={styles.containerModal}>
-                    <View style={styles.childViewModal}>
-                        <Text style={styles.titleModal} variant="titleLarge">Cliente</Text>
-                        <Pressable onPress={() => setVisible(false)}>
-                            <AntDesign name="closecircle" size={24}/>
-                        </Pressable>
-                    </View>
-                    {/* { isLoadingLocation && <ActivityIndicator size={"large"} color="#000"/> } */}
-                    {/* {!hasLocationPermission && (
-                        <Button
-                        title="Conceder Permissão de Localização"
-                        onPress={requestLocationPermission}
-                        />
-                    )} */}
-                    { currentLocation && (
-                        <MapView 
-                          style={styles.map} 
-                          provider={PROVIDER_GOOGLE} 
-                          initialRegion={currentLocation} 
-                          scrollEnabled={false}
-                          pitchEnabled={false}
-                          rotateEnabled={false}
-
-                        >
-                            <Marker 
-                             coordinate={{
-                                latitude: currentLocation.latitude,
-                                longitude: currentLocation.longitude
-                             }}
-                            
-                            />
-                        </MapView>
-
-                    )}
-
+    <View style={styles.container}>
+      <Text style={styles.title} variant="titleLarge">
+        Clientes
+      </Text>
+      <View style={styles.containerChild}>
+        <FlatList
+          data={cliente}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.clientList}>
+              <TouchableOpacity onPress={() => handleClientePress(item)}>
+                <View style={styles.clienteItem}>
+                  <Text>{item.nome}</Text>
                 </View>
-                
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setVisible(true)}>
+                <AntDesign name="right" size={15} />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </View>
 
-            </Modal>
-            
+      <Modal
+        visible={visible}
+        animationType="fade"
+        onRequestClose={() => setVisible(false)}
+      >
+        <View style={styles.containerModal}>
+          <View style={styles.childViewModal}>
+            <Text style={styles.titleModal} variant="titleLarge">
+              {clienteSelecionado?.nome || "Cliente"}
+            </Text>
+            <Pressable onPress={() => setVisible(false)}>
+              <AntDesign name="closecircle" size={24} />
+            </Pressable>
+          </View>
 
+          {clienteSelecionado && (
+            <>
+              <MapView
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                initialRegion={{
+                  latitude: clienteSelecionado.latitude,
+                  longitude: clienteSelecionado.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
+                showsUserLocation
+                showsMyLocationButton={true}
+              >
+                <MapView.Marker
+                  coordinate={{
+                    latitude: clienteSelecionado.latitude,
+                    longitude: clienteSelecionado.longitude,
+                  }}
+                  title={clienteSelecionado.nome}
+                  description={clienteSelecionado.endereco}
+                />
+              </MapView>
+
+              {/* Conteúdo do Cliente.tsx adaptado */}
+              <View style={styles.detalhesCliente}>
+                <Text style={styles.title} variant="titleLarge">
+                  Detalhes do Cliente
+                </Text>
+                <Text>Código: {clienteSelecionado.id}</Text>
+                <Text>Nome: {clienteSelecionado.nome}</Text>
+                <Text>
+                  Saldo atual: R${" "}
+                  {Number(clienteSelecionado.saldo)
+                    .toFixed(2)
+                    .replace(".", ",")}
+                </Text>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      setVisible(false);
+                      navigation.navigate("Pagamento", {
+                        clienteId: clienteSelecionado.id,
+                      });
+                    }}
+                  >
+                    Ir para Pagamento
+                  </Button>
+                </View>
+              </View>
+            </>
+          )}
         </View>
+      </Modal>
+    </View>
   );
 }
 
