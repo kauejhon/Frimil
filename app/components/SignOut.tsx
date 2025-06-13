@@ -1,7 +1,7 @@
-import { useClerk } from "@clerk/clerk-expo";
+import { useClerk, useUser } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
 import { StyleSheet } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { ActivityIndicator, Button, Text } from "react-native-paper";
 
 export function SignOutButton() {
 
@@ -11,7 +11,7 @@ export function SignOutButton() {
     async function handleSignOutPress() {
         try{
             await signOut()
-
+            
             Linking.openURL(Linking.createURL("/(auth)/login"))
 
         } catch(err) {
@@ -19,6 +19,8 @@ export function SignOutButton() {
 
         }        
     }
+
+    
 
 
     return(
@@ -29,7 +31,10 @@ export function SignOutButton() {
           >
             <Text style={{ color: "#fff" }} variant="titleMedium">Sair da Conta</Text>
         </Button>
+       
     )
+
+    
 
 }
 
