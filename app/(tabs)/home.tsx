@@ -74,7 +74,6 @@ export default function HomeScreen() {
 
 
   return (
-    <ScrollView>
         <View style={styles.container}>
             <Text style={styles.title} variant="titleLarge">
                 Clientes
@@ -148,7 +147,6 @@ export default function HomeScreen() {
             
 
         </View>
-    </ScrollView>
   );
 }
 
@@ -168,13 +166,12 @@ const styles = StyleSheet.create({
     },
     clientList: {
         flex: 1,
-        marginTop: 20,
         padding: 10,
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
+        marginTop: 1,
         backgroundColor: "#fff",
-        borderRadius: 8,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
