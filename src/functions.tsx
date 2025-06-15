@@ -52,20 +52,20 @@ export function handleErrorSignIn(error: ErrorProps, email: Dispatch<SetStateAct
 
 }
 
-export const fetchCurrentLocation = async (
-    error: Dispatch<SetStateAction< string | null>>, 
-    currentLocation: Dispatch<SetStateAction< Region | null>>) => {
-        let { status } = await Location.getForegroundPermissionsAsync();
+// export const fetchCurrentLocation = async (
+//     error: Dispatch<SetStateAction< string | null>>, 
+//     currentLocation: Dispatch<SetStateAction< Region | null>>) => {
+//         let { status } = await Location.getForegroundPermissionsAsync();
 
-        if(status !== "granted") {
-            error("Permissão para acessar localização foi negada!")
-            // setHasLocationPermission(false)
-        }
+//         if(status !== "granted") {
+//             error("Permissão para acessar localização foi negada!")
+//             // setHasLocationPermission(false)
+//         }
             
-        currentLocation({
-            latitude:  -1.407721233196371, // Exemplo: Latitude de Belém
-            longitude: -48.471521664808094, // Exemplo: Longitude de Belém
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        })
-}
+//         currentLocation({
+//             latitude:  -1.407721233196371, // Exemplo: Latitude de Belém
+//             longitude: -48.471521664808094, // Exemplo: Longitude de Belém
+//             latitudeDelta: 0.0922,
+//             longitudeDelta: 0.0421,
+//         })
+// }

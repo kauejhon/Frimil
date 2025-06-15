@@ -1,21 +1,24 @@
+import { ClientProps, clients } from "@/data/dataClient";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, ScrollView, TouchableOpacity, View, StyleSheet, Pressable, StatusBar, Platform } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { Text } from "react-native-paper"
 
-interface PropsMaps {
-    currentLocation: Region | null
-}
 
-export function ModalComp({ currentLocation }: PropsMaps) {
+export function ModalComp({ name, currentLocation }: ClientProps) {
+    
     const [ visible, setVisible ] = useState<boolean>(false)
+
     return(
-        <ScrollView>
-            <View style={[styles.containerChild, styles.shadowProps]}>
-                <Text style={styles.title} variant="titleLarge">Cliente</Text>
+        <View>
+            
+            <View style={[styles.containerChild]}>
+                        <Text style={styles.title} variant="titleLarge">
+                            {name}
+                        </Text>
                 <TouchableOpacity onPress={() => setVisible(true)}>
-                    <AntDesign name="pluscircle" size={24}/>
+                    <AntDesign name="right" size={24}/>
                 </TouchableOpacity>
             </View>
 
@@ -28,7 +31,9 @@ export function ModalComp({ currentLocation }: PropsMaps) {
 
                 <View style={styles.containerModal}>
                     <View style={styles.childViewModal}>
-                        <Text style={styles.titleModal} variant="titleLarge">Cliente</Text>
+                        <Text style={styles.titleModal} variant="titleLarge">
+                            {name}
+                        </Text>
                         <Pressable onPress={() => setVisible(false)}>
                             <AntDesign name="closecircle" size={24}/>
                         </Pressable>
@@ -40,7 +45,7 @@ export function ModalComp({ currentLocation }: PropsMaps) {
                     onPress={requestLocationPermission}
                     />
                     )} */}
-                    { currentLocation && (
+                    
                     <MapView 
                     style={styles.map} 
                     provider={PROVIDER_GOOGLE} 
@@ -52,34 +57,30 @@ export function ModalComp({ currentLocation }: PropsMaps) {
                     >
                     <Marker 
                     coordinate={{
-                    latitude: currentLocation.latitude,
-                    longitude: currentLocation.longitude
+                    latitude: currentLocation!.latitude,
+                    longitude: currentLocation!.longitude
                     }}
 
                     />
                     </MapView>
 
-                    )}
 
                 </View>
 
 
             </Modal>
 
-        </ScrollView>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     containerChild: {
-        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: "#fff",
-        borderRadius: 8,
-        padding: 20,
-        marginBottom: 35
+        padding: 10,
 
     }, 
     title: {
@@ -104,15 +105,5 @@ const styles = StyleSheet.create({
     map: {
         width: "100%",
         height: "50%",
-    },
-    shadowProps: {
-        shadowColor: "#000000",
-        shadowOffset: {
-        width: 0,
-        height: 7,
-        },
-        shadowOpacity:  0.21,
-        shadowRadius: 7.68,
-        elevation: 10
     }
 })
