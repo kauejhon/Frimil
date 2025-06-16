@@ -16,9 +16,9 @@ export default function RootLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Configurações",
           tabBarActiveTintColor: "#7c1d1e",
-          tabBarIcon: () => <AntDesign name="user" size={24} color="#7c1d1e" />,
+          tabBarIcon: () => <AntDesign name="setting" size={24} color="#7c1d1e" />,
         }}
       />
     </Tabs>

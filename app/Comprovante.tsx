@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Image, Share } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { Text, Button } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Print from "expo-print";
@@ -40,10 +40,16 @@ export default function Comprovante() {
           resizeMode="contain"
         />
       </View>
-      <Button mode="contained" style={styles.botao} onPress={compartilharPDF}>
+      <Button
+        mode="contained"
+        buttonColor="#7c1d1e"
+        style={styles.botao}
+        onPress={compartilharPDF}
+      >
         Compartilhar PDF
       </Button>
       <Button
+        textColor="#7c1d1e"
         mode="outlined"
         style={styles.botao}
         onPress={() => router.back()}
@@ -90,5 +96,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     width: 220,
     alignSelf: "center",
+    borderRadius: 10,
   },
 });
