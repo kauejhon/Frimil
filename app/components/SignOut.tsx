@@ -24,12 +24,14 @@ export function SignOutButton() {
 
 
     return(
-        <Button  
-          mode="contained" 
-          buttonColor="#3b0000" 
+        <Button
+          mode="contained"
+          buttonColor="#7c1d1e"
           onPress={handleSignOutPress}
-          >
-            <Text style={{ color: "#fff" }} variant="titleMedium">Sair da Conta</Text>
+        >
+          <Text style={{ color: "#fff" }} variant="titleMedium">
+            Sair da Conta
+          </Text>
         </Button>
        
     )
@@ -37,11 +39,4 @@ export function SignOutButton() {
     
 
 }
-
-
-// const styles = StyleSheet.create({
-//     btnText: {
-//         color: "#fff"
-//     }
-// })
 

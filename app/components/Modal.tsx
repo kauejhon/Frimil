@@ -13,14 +13,12 @@ export function ModalComp({ name, currentLocation }: ClientProps) {
     return(
         <View>
             
-            <View style={[styles.containerChild]}>
-                        <Text style={styles.title} variant="titleLarge">
-                            {name}
-                        </Text>
-                <TouchableOpacity onPress={() => setVisible(true)}>
-                    <AntDesign name="right" size={24}/>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.containerChild} onPress={() => setVisible(true)}>
+                <Text style={styles.title} variant="titleLarge">
+                    {name}
+                </Text>
+                <AntDesign name="right" size={20}/>
+            </TouchableOpacity>
 
 
             <Modal

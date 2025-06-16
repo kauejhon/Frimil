@@ -1,161 +1,142 @@
-import { useSignIn, useUser } from "@clerk/clerk-expo";
-import { Link, router } from "expo-router";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
-import { Button, TextInput, Text, useTheme, ActivityIndicator } from "react-native-paper";
-import { StyleSheet } from "react-native";
-import { Dispatch, SetStateAction, useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { handleErrorSignIn } from "@/src/functions";
+import React from "react";
+import { useSignIn } from "@clerk/clerk-expo";
+import { Link, useRouter } from "expo-router";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 
+// Função para traduzir mensagens de erro
+function traduzirErro(mensagem: string): string {
+    if (!mensagem) return "Ocorreu um erro.";
+    if (mensagem.includes("Invalid action")) return "Ação inválida.";
+    if (mensagem.includes("Session already exists")) return "Sessão já existe.";
+    if (mensagem.includes("Passwords must be 8 characters or more."))return "A senha precisa ter 8 caracteres ou mais.";
+    if (mensagem.includes("That email address is taken. Please try another")) return "Usuário já cadastrado.";
+    if (mensagem.includes("Invalid verification code")) return "Código de verificação inválido.";
+    if (mensagem.includes("Enter email address.")) return "Digite seu endereço de e-mail.";
+    if (mensagem.includes("is missing")) return "O e-mail é obrigatório.";
+    if (mensagem.includes("is invalid")) return "O e-mail é inválido.";
+    if (mensagem.includes("Enter password")) return "A senha é obrigatória.";
+    if (mensagem.includes("Couldn't find your account")) return "Conta não encontrada";
+    if (mensagem.includes("Identifier is invalid.")) return "O e-mail é inválido";
+    return mensagem;
+  }
 
-export interface ErrorProps {
+export default function Page() {
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
 
-    status: number;
-    clerkError: boolean;
-    errors: [
-    {
-      code: string;
-      message: string;
-      longMessage: string;
-      meta: {
-        paramName: string
-    }}]
-}
+  const [emailAddress, setEmailAddress] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
 
-
-
-
-export default function SignInScreen() {
-    const { signIn, setActive, isLoaded } = useSignIn();
-    const { user } = useUser()
-    const theme = useTheme()
-
-    const [errorPassword, setErrorPassword] = useState<string | null>("");
-    const [errorEmail, setErrorEmail] = useState<string | null>("");
-    const [ emailAddress, setEmailAddress ] = useState<string>("")
-    const [ password, setPassword ] = useState<string>("")
-
-
-
-    
-
-    async function handleOnSignInPress() {
-        if(!isLoaded) return setErrorEmail("Usuário não está logado");
-
-        const emailClient = user?.primaryEmailAddress?.emailAddress
-
-        if(!emailAddress || !password) {
-            setErrorEmail("Preecha todos os campos, por gentileza!");
-            setErrorPassword("Preecha todos os campos, por gentileza!")
-            return;
-        }
-        if(password.length < 8) {
-            setErrorPassword("Senha Inválida")
-            return;
-        }
-
-      
-
-        try {
-            const signInAttempt = await signIn.create({
-                identifier: emailAddress,
-                password
-            })
-
-            if(signInAttempt.status === "complete") {
-                await setActive({ session: signInAttempt.createdSessionId })
-                router.replace("/(tabs)/home");
-                setErrorEmail(null)
-                setErrorPassword(null)
-            } else {
-                console.error(JSON.stringify(signInAttempt, null, 2))
-            }
-
-        } catch(err) {
-            const error = err as ErrorProps
-            handleErrorSignIn(error, setErrorEmail, setErrorPassword)
-        }
-
+  const onSignInPress = async () => {
+    if (!isLoaded) return;
+    setError("");
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: emailAddress,
+        password,
+      });
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace("/(tabs)/home");
+      } else {
+        setError("Verificação adicional necessária.");
+        console.error(JSON.stringify(signInAttempt, null, 2));
+      }
+    } catch (err: any) {
+      setError(traduzirErro(err.errors?.[0]?.message || "Erro ao fazer login"));
+      console.error(JSON.stringify(err, null, 2));
     }
+  };
 
-
-    return(
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-            <View style={styles.containerView}>
-                <Text variant="headlineMedium" style={styles.title}>
-                    Bem Vindo, Faça o Login
-                </Text>
-                <TextInput 
-                value={emailAddress}
-                label="Email"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                placeholder="example@gmail.com"
-                mode="outlined"
-                activeOutlineColor="#3b0000"
-                onChangeText={(email) => {
-                    setEmailAddress(email)
-                    setErrorEmail(null)
-                }}
-                
-                />
-
-                {errorEmail && (
-                    <Text style={{ color: theme.colors.error }}><AntDesign name="exclamationcircleo" /> {errorEmail}</Text> 
-                )}
-
-                <TextInput 
-                value={password}
-                label="Senha"
-                autoCapitalize="none"
-                secureTextEntry
-                mode="outlined"
-                activeOutlineColor="#3b0000"
-                onChangeText={(passwordProp) => {
-                    setPassword(passwordProp)
-                    setErrorPassword(null)
-                }}
-                />
-
-                {errorPassword &&  (
-                    <Text style={{ color: theme.colors.error }}><AntDesign name="exclamationcircleo" /> {errorPassword}</Text> 
-                )}
-
-                <Button mode="contained" buttonColor="#3b0000" onPress={handleOnSignInPress}>
-                    <Text variant="titleMedium" style={styles.btnText}>Iniciar Sessão</Text> 
-                </Button>
-
-                <View style={styles.containerFooter}>
-                    <Text variant="titleMedium">Não Possui uma conta?</Text>
-                    <Link href={"/(auth)/auth"}><Text variant="titleSmall">Cria a sua Conta</Text></Link>
-                </View>
-            </View>
-    
-        </KeyboardAvoidingView>
-    )
-
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Entrar</Text>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      <TextInput
+        style={styles.input}
+        autoCapitalize="none"
+        value={emailAddress}
+        placeholder="Digite seu e-mail"
+        onChangeText={setEmailAddress}
+      />
+      <TextInput
+        style={styles.input}
+        value={password}
+        placeholder="Digite sua senha"
+        secureTextEntry={true}
+        onChangeText={setPassword}
+      />
+      <TouchableOpacity style={styles.button} onPress={onSignInPress}>
+        <Text style={styles.buttonText}>Continuar</Text>
+      </TouchableOpacity>
+      <View style={styles.row}>
+        <Text>Não tem uma conta?</Text>
+        <Link href="/(auth)/auth">
+          <Text style={styles.link}>Inscreva-se</Text>
+        </Link>
+      </View>
+    </View>
+  );
 }
-
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    containerView: {
-        flex: 1,
-        justifyContent: "center",
-        gap: 10,
-        padding: 15
-    },
-    title: {
-        textAlign: "center",
-        fontWeight: "bold"
-    },
-    btnText: {
-        color: "#fff"
-    },
-    containerFooter: {
-        alignItems: "center",
-
-    }
-})
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 24,
+  },
+  error: {
+    color: "red",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  input: {
+    width: 300,
+    height: 48,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+  },
+  button: {
+    width: 300,
+    height: 48,
+    backgroundColor: "#7c1d1e",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  link: {
+    color: "#7c1d1e",
+    marginLeft: 4,
+    fontWeight: "bold",
+  },
+});

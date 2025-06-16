@@ -6,10 +6,8 @@ import { clients } from "@/data/dataClient";
 
 export default function HomeScreen() {
 
-
-
   return (
-    <ScrollView style={{ backgroundColor: "#b4b4b4" }}>
+    <ScrollView>
         <View style={styles.container}>
             {clients.map((props) => (
                 <ModalComp key={props.name} name={props.name} currentLocation={props.currentLocation} />
@@ -26,6 +24,6 @@ const styles = StyleSheet.create({
         flex: 1,        
         paddingInline: 20,
         marginTop: Platform.OS === "android" ? StatusBar.currentHeight! + 20 : 50,
-        gap: 10,
+        gap: 1,
     }
 })
